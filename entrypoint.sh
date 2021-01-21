@@ -52,11 +52,13 @@ tmp_dir=$(mktemp -d -t ci-XXXXXXXXXX)
     git pull "$GIT_REPOSITORY_URL"
 ) || exit 1
 
-debug "Enumerating contents of $1"
-for file in $(find $1 -maxdepth 1 -type f -name '*.md' -execdir basename '{}' ';'); do
-    debug "Copying $file"
-    cp "$1/$file" "$tmp_dir"
-done
+debug "Sync ${1} to ${tmp_dir}"
+rsync -rva "${1}" "${tmp_dir}"
+# debug "Enumerating contents of $1"
+# for file in $(find $1 -type f -name '*.md' -execdir basename '{}' ';'); do
+#     debug "Copying $file"
+#     cp "$1/$file" "$tmp_dir"
+# done
 
 debug "Committing and pushing changes"
 (
